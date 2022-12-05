@@ -10,7 +10,7 @@ const handleEquipmentMetadataSet: EquipmentMetadataSet = async (event: any, cont
   //   user: event.params.user,
   // });
 
-  // console.log(`Block Log id: `, event.logId)
+  console.log(`Block Log id: `, event.logId)
   // console.log(`BlocK number: `, event.blockNumber)
   // console.log("Test!!!!!!")
   // console.log(`equipmentId: ${event.params.equipmentId.toString()}`)
