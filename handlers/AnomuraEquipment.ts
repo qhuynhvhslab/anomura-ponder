@@ -37,7 +37,7 @@ const  handleOnTransferAsMint: Transfer = async (event: any, context) => {
     let toAddress = event.params.to.toString();
     let equipmentId =  parseInt(event.params.tokenId.toString());
     let collectionAddress = ethers.utils.getAddress(event.address)
-    console.log(event);
+    // console.log(event);
     console.log("equipmentId: ", equipmentId)
     console.log("collectionAddress: ", collectionAddress)
 
