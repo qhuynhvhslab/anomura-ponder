@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import prisma from "../prisma";
 
 const handleEquipmentMetadataSet: EquipmentMetadataSet = async (event: any, context) => {
-  // console.log("new equipment metadataset!");
+  console.log("new equipment metadataset!");
 
   // context.entities.GobbledArt.insert(`${event.params.nft}-${event.params.id}`, {
   //   id: `${event.params.nft}-${event.params.id}`,
