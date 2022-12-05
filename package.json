@@ -3,7 +3,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ponder dev",
-    "start": "ponder start & node index.js",
+    "start": "ponder start",
     "codegen": "ponder codegen",
     "heroku-postbuild": "ponder codegen "
   },

@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import prisma from "../prisma";
 
 const handleEquipmentMetadataSet: EquipmentMetadataSet = async (event: any, context) => {
-  console.log("new equipment metadataset!");
+  // console.log("new equipment metadataset!");
 
   // context.entities.GobbledArt.insert(`${event.params.nft}-${event.params.id}`, {
   //   id: `${event.params.nft}-${event.params.id}`,
@@ -47,21 +47,21 @@ const  handleOnTransferAsMint: Transfer = async (event: any, context) => {
   //   }
   // })
 
-  // let mintOp = await prisma.equipment.upsert({
-  //   where: {
-  //     collectionAddress_equipmentId: {collectionAddress, equipmentId}
-  //   },
-  //   create:{
-  //     equipmentId,
-  //     collectionAddress,
-  //     equipmentName: "Mystery Rune of DeepSea",
+  let mintOp = await prisma.equipment.upsert({
+    where: {
+      collectionAddress_equipmentId: {collectionAddress, equipmentId}
+    },
+    create:{
+      equipmentId,
+      collectionAddress,
+      equipmentName: "Mystery Rune of DeepSea",
       
-  //   }, 
-  //   update:{
-  //     owner: ""
-  //   } // do nothing
-  // })
-  // console.log("block#: ", event.blockNumber)
+    }, 
+    update:{
+      owner: ""
+    } // do nothing
+  })
+  console.log("block#: ", event.blockNumber)
   }
 
 }
