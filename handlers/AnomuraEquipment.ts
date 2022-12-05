@@ -10,7 +10,7 @@ const handleEquipmentMetadataSet: EquipmentMetadataSet = async (event: any, cont
   //   user: event.params.user,
   // });
 
-  console.log(`Block Log id: `, event.logId)
+  // console.log(`Block Log id: `, event.logId)
   // console.log(`BlocK number: `, event.blockNumber)
   // console.log("Test!!!!!!")
   // console.log(`equipmentId: ${event.params.equipmentId.toString()}`)
@@ -39,7 +39,7 @@ const  handleOnTransferAsMint: Transfer = async (event: any, context) => {
     let collectionAddress = ethers.utils.getAddress(event.address)
     // console.log(event);
     console.log("equipmentId: ", equipmentId)
-    console.log("collectionAddress: ", collectionAddress)
+    // console.log("collectionAddress: ", collectionAddress)
 
   //   let equipmentQuery = await prisma.equipment.findUnique({
   //   where: {
@@ -61,7 +61,7 @@ const  handleOnTransferAsMint: Transfer = async (event: any, context) => {
   //     owner: ""
   //   } // do nothing
   // })
-  console.log("block#: ", event.blockNumber)
+  // console.log("block#: ", event.blockNumber)
   }
 
 }
