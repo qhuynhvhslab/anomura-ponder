@@ -1,5 +1,6 @@
 {
   "private": true,
+  "main": "index.js",
   "scripts": {
     "dev": "ponder dev",
     "start": "node index.js && ponder start",
