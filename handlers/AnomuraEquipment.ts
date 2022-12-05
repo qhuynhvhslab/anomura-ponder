@@ -47,20 +47,20 @@ const  handleOnTransferAsMint: Transfer = async (event: any, context) => {
   //   }
   // })
 
-  let mintOp = await prisma.equipment.upsert({
-    where: {
-      collectionAddress_equipmentId: {collectionAddress, equipmentId}
-    },
-    create:{
-      equipmentId,
-      collectionAddress,
-      equipmentName: "Mystery Rune of DeepSea",
+  // let mintOp = await prisma.equipment.upsert({
+  //   where: {
+  //     collectionAddress_equipmentId: {collectionAddress, equipmentId}
+  //   },
+  //   create:{
+  //     equipmentId,
+  //     collectionAddress,
+  //     equipmentName: "Mystery Rune of DeepSea",
       
-    }, 
-    update:{
-      owner: ""
-    } // do nothing
-  })
+  //   }, 
+  //   update:{
+  //     owner: ""
+  //   } // do nothing
+  // })
   console.log("block#: ", event.blockNumber)
   }
 
