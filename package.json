@@ -2,8 +2,9 @@
   "private": true,
   "scripts": {
     "dev": "ponder dev",
-    "start": "ponder start",
-    "codegen": "ponder codegen"
+    "start": "node index.js && ponder start",
+    "codegen": "ponder codegen",
+    "heroku-postbuild": "ponder codegen"
   },
   "dependencies": {
     "@ponder/core": "latest",
