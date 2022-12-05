@@ -3,9 +3,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "ponder dev",
-    "start": "node index.js && ponder start",
+    "start": "node index.js ",
     "codegen": "ponder codegen",
-    "heroku-postbuild": "ponder codegen"
+    "heroku-postbuild": "ponder codegen && ponder start"
   },
   "dependencies": {
     "@ponder/core": "latest",
