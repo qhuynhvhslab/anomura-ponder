@@ -19,6 +19,7 @@ const ponderConfig = {
       abi: "./abis/AnomuraEquipment.json",
       startBlock: parseInt(process.env.ANOMURA_EQUIPMENT_START_BLOCK),
     },
+
   ],
 };
 

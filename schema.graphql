@@ -1,9 +1,18 @@
-type ExampleToken @entity {
+type Equipment @entity {
   id: ID!
-  tokenId: Int!
-  trait: TokenTrait!
+  equipmentId: Int!
+  equipmentName: String!
+  equipmentType: Int!
+  image: String!
+  equippedToAnomura: Anomura
 }
-enum TokenTrait {
-  GOOD
-  BAD
+
+type Anomura @entity {
+  id: ID!
 }
+
+
+enum EquipmentType {
+  NORMAL, RARE
+}
+

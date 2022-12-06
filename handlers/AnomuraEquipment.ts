@@ -1,73 +1,129 @@
-import {EquipmentMetadataSet, Transfer} from "../generated/handlers";
+import { EquipmentMetadataSetHandler, TransferHandler } from "../generated/handlers";
 import { ethers } from "ethers";
 import prisma from "../prisma";
+import axios from "axios";
 
-const handleEquipmentMetadataSet: EquipmentMetadataSet = async (event: any, context) => {
-  // console.log("new equipment metadataset!");
+import { EquipmentRarity, EquipmentType } from "@prisma/client";
 
-  // context.entities.GobbledArt.insert(`${event.params.nft}-${event.params.id}`, {
-  //   id: `${event.params.nft}-${event.params.id}`,
-  //   user: event.params.user,
-  // });
+const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (event, context) => {
+    let collectionAddress = ethers.utils.getAddress(process.env.ANOMURA_EQUIPMENT_ADDRESS);
+    let equipmentId = parseInt(event.params.equipmentId);
+    let equipmentName = event.params.equipmentName;
+    let equipmentType = event.params.equipmentType;
+    let equipmentRarity = event.params.equipmentRarity;
 
-  // console.log(`Block Log id: `, event.logId)
-  // console.log(`BlocK number: `, event.blockNumber)
-  // console.log("Test!!!!!!")
-  // console.log(`equipmentId: ${event.params.equipmentId.toString()}`)
-  // console.log(`equipmentName: ${event.params.equipmentName}`)
-  // const collectionAddress = "0xE394Ac77f89FbFAF464FC5796f90C2E192c2f2de"
+    let equipmentPostApi = `${process.env.ANOMURA_WEBSITE}/api/equipment/post/${equipmentId}`;
 
-  // let equipmentId = parseInt(event.params.equipmentId.toString());
-  // let equipmentQuery = await prisma.equipment.findUnique({
-  //   where: {
-  //     collectionAddress_equipmentId: {collectionAddress, equipmentId}
-  //   }
-  // })
-  // console.log("equipment Query: " , equipmentQuery)
-  
-  return;
+    let equipmentQuery = await prisma.equipment.findUnique({
+        where: {
+            collectionAddress_equipmentId: { collectionAddress, equipmentId },
+        },
+    });
+
+    try {
+        // Only process if not reveal yet
+        if (!equipmentQuery.isReveal) {
+            console.log(`Trying to reveal equipmentId: equipmentId`)
+   
+            let newEquipmentOp = await axios
+                .post(
+                    equipmentPostApi,
+                    {
+                        collectionAddress,
+                        equipmentName,
+                        equipmentType,
+                        equipmentRarity,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bot ${process.env.ANOMURA_WEBSITE_SECRET}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                )
+              
+                if(newEquipmentOp){
+                    console.log(`Reveal done, track in log to not process again`)
+                }
+        }
+    } catch (error) {
+        console.log("error posting new equipmnent to nextjs website: " + error);
+    }
+
+   
+   
+
 };
 
-const  handleOnTransferAsMint: Transfer = async (event: any, context) => {
-  // console.log(`Block Log id: `, event.logId)
-  // console.log(`BlocK number: `, event.blockNumber)
+const handleOnTransferAsMint: TransferHandler = async (event, context) => {
 
-  let fromAddress = event.params.from.toString();
-  if(fromAddress === `0x0000000000000000000000000000000000000000`){
-    let toAddress = event.params.to.toString();
-    let equipmentId =  parseInt(event.params.tokenId.toString());
-    let collectionAddress = ethers.utils.getAddress(event.address)
-    // console.log(event);
-    console.log("equipmentId: ", equipmentId)
-    // console.log("collectionAddress: ", collectionAddress)
+    let fromAddress = event.params.from.toString();
+    if (fromAddress === `0x0000000000000000000000000000000000000000`) {
+        let toAddress = event.params.to.toString();
+        let equipmentId = parseInt(event.params.tokenId.toString());
+        let collectionAddress = ethers.utils.getAddress(process.env.ANOMURA_EQUIPMENT_ADDRESS);
 
-  //   let equipmentQuery = await prisma.equipment.findUnique({
-  //   where: {
-  //     collectionAddress_equipmentId: {collectionAddress, equipmentId}
-  //   }
-  // })
+        let equipmentQuery = await prisma.equipment.findUnique({
+            where: {
+                collectionAddress_equipmentId: { collectionAddress, equipmentId },
+            },
+        });
 
-  let mintOp = await prisma.equipment.upsert({
-    where: {
-      collectionAddress_equipmentId: {collectionAddress, equipmentId}
-    },
-    create:{
-      equipmentId,
-      collectionAddress,
-      equipmentName: "Mystery Rune of DeepSea",
-      
-    }, 
-    update:{
-      owner: ""
-    } // do nothing
-  })
-  console.log("block#: ", event.blockNumber)
-  }
+        if (!equipmentQuery) {
+            console.log(`Creating new equipment that not reveal - equipmentId: ${equipmentId}`);
 
-}
+            let mintOp = await prisma.equipment.upsert({
+                where: {
+                    collectionAddress_equipmentId: { collectionAddress, equipmentId },
+                },
+                create: {
+                    equipmentId,
+                    collectionAddress,
+                    equipmentName: "Mystery Rune of DeepSea",
+                },
+                update: {
+                    owner: "",
+                }, // do nothing
+            });
+        }
+    }
+};
+
 export const AnomuraEquipment = {
-  EquipmentMetadataSet: handleEquipmentMetadataSet,
-  Transfer: handleOnTransferAsMint
+    EquipmentMetadataSet: handleEquipmentMetadataSetHandler,
+    Transfer: handleOnTransferAsMint,
 };
-// deploy: 7990478
-// last mint 7991047
+
+const getEquipmentType = (type: EquipmentType) => {
+    switch (type) {
+        case 0:
+            return EquipmentType.BODY;
+        case 1:
+            return EquipmentType.CLAWS;
+        case 2:
+            return EquipmentType.LEGS;
+        case 3:
+            return EquipmentType.SHELL;
+        case 4:
+            return EquipmentType.HEADPIECES;
+        case 5:
+            return EquipmentType.HABITAT;
+        default:
+            console.log(type);
+            throw new Error(`invalid equipment type map`);
+    }
+};
+const getEquipmentRarity = (rarity: EquipmentRarity) => {
+    switch (rarity) {
+        case 0:
+            return EquipmentRarity.NORMAL;
+        case 1:
+            return EquipmentRarity.MAGIC;
+        case 2:
+            return EquipmentRarity.RARE;
+        case 3:
+            return EquipmentRarity.LEGENDARY;
+        default:
+            throw new Error(`invalid equipment rarity map`);
+    }
+};
