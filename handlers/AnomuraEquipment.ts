@@ -52,7 +52,8 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
 };
 
 const handleOnTransferAsMint: TransferHandler = async (event, context) => {
-    console.log(event)
+    console.log("equipmentId: ", parseInt(event.params.tokenId.toString()));
+
     let fromAddress = event.params.from.toString();
     try {
         if (fromAddress === `0x0000000000000000000000000000000000000000`) {
