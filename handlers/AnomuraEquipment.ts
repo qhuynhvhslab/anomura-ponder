@@ -12,8 +12,6 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
     let equipmentType = event.params.equipmentType;
     let equipmentRarity = event.params.equipmentRarity;
 
-    
-
     let equipmentQuery = await prisma.equipment.findUnique({
         where: {
             collectionAddress_equipmentId: { collectionAddress, equipmentId },
@@ -24,30 +22,29 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
         // Only process if not reveal yet
         if (!equipmentQuery.isReveal) {
             let equipmentPostApi = `${process.env.ANOMURA_WEBSITE}/api/equipment/post/${equipmentId}`;
-            console.log(`Trying to reveal equipmentId: ${equipmentId}`)
-   
-            let newEquipmentOp = await axios
-                .post(
-                    equipmentPostApi,
-                    {
-                        collectionAddress,
-                        equipmentName,
-                        equipmentType,
-                        equipmentRarity,
+            console.log(`Trying to reveal equipmentId: ${equipmentId}`);
+
+            let newEquipmentOp = await axios.post(
+                equipmentPostApi,
+                {
+                    collectionAddress,
+                    equipmentName,
+                    equipmentType,
+                    equipmentRarity,
+                },
+                {
+                    headers: {
+                        Authorization: `Bot ${process.env.ANOMURA_WEBSITE_SECRET}`,
+                        "Content-Type": "application/json",
                     },
-                    {
-                        headers: {
-                            Authorization: `Bot ${process.env.ANOMURA_WEBSITE_SECRET}`,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                )
-              
-                if(newEquipmentOp){
-                    console.log(`Reveal done, track in log to not process again`)
                 }
-        }else{
-            console.log(`Equipment ${equipmentId} revealed. No need to upsert`)
+            );
+
+            if (newEquipmentOp) {
+                console.log(`Reveal done, track in log to not process again`);
+            }
+        } else {
+            console.log(`Equipment ${equipmentId} revealed. No need to upsert`);
         }
     } catch (error) {
         console.log("error posting new equipmnent to nextjs website: " + error);
@@ -55,45 +52,43 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
 };
 
 const handleOnTransferAsMint: TransferHandler = async (event, context) => {
-
+    console.log(event)
     let fromAddress = event.params.from.toString();
-try {
-    if (fromAddress === `0x0000000000000000000000000000000000000000`) {
+    try {
+        if (fromAddress === `0x0000000000000000000000000000000000000000`) {
+            let toAddress = event.params.to.toString();
+            let equipmentId = parseInt(event.params.tokenId.toString());
+            let collectionAddress = ethers.utils.getAddress(process.env.ANOMURA_EQUIPMENT_ADDRESS);
 
-        let toAddress = event.params.to.toString();
-        let equipmentId = parseInt(event.params.tokenId.toString());
-        let collectionAddress = ethers.utils.getAddress(process.env.ANOMURA_EQUIPMENT_ADDRESS);
-
-        let equipmentQuery = await prisma.equipment.findUnique({
-            where: {
-                collectionAddress_equipmentId: { collectionAddress, equipmentId },
-            },
-        });
-
-        if (!equipmentQuery) {
-            console.log(`Creating new equipment that not reveal - equipmentId: ${equipmentId}`);
-
-            let mintOp = await prisma.equipment.upsert({
+            let equipmentQuery = await prisma.equipment.findUnique({
                 where: {
                     collectionAddress_equipmentId: { collectionAddress, equipmentId },
                 },
-                create: {
-                    equipmentId,
-                    collectionAddress,
-                    equipmentName: "Mystery Rune of DeepSea",
-                },
-                update: {
-                    owner: "",
-                }, // do nothing
             });
-        }else{
-            console.log(`Equipment existed. No need to create`)
+
+            if (!equipmentQuery) {
+                console.log(`Creating new equipment that not reveal - equipmentId: ${equipmentId}`);
+
+                let mintOp = await prisma.equipment.upsert({
+                    where: {
+                        collectionAddress_equipmentId: { collectionAddress, equipmentId },
+                    },
+                    create: {
+                        equipmentId,
+                        collectionAddress,
+                        equipmentName: "Mystery Rune of DeepSea",
+                    },
+                    update: {
+                        owner: "",
+                    }, // do nothing
+                });
+            } else {
+                console.log(`Equipment existed. No need to create`);
+            }
         }
+    } catch (error) {
+        console.log("error saving new equipment: " + error);
     }
-} catch (error) {
-    console.log("error saving new equipment: " + error);
-}
-   
 };
 
 export const AnomuraEquipment = {
