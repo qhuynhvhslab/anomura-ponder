@@ -12,7 +12,7 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
     let equipmentType = event.params.equipmentType;
     let equipmentRarity = event.params.equipmentRarity;
 
-    let equipmentPostApi = `${process.env.ANOMURA_WEBSITE}/api/equipment/post/${equipmentId}`;
+    
 
     let equipmentQuery = await prisma.equipment.findUnique({
         where: {
@@ -23,7 +23,8 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
     try {
         // Only process if not reveal yet
         if (!equipmentQuery.isReveal) {
-            console.log(`Trying to reveal equipmentId: equipmentId`)
+            let equipmentPostApi = `${process.env.ANOMURA_WEBSITE}/api/equipment/post/${equipmentId}`;
+            console.log(`Trying to reveal equipmentId: ${equipmentId}`)
    
             let newEquipmentOp = await axios
                 .post(
@@ -45,20 +46,20 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
                 if(newEquipmentOp){
                     console.log(`Reveal done, track in log to not process again`)
                 }
+        }else{
+            console.log(`Equipment ${equipmentId} revealed. No need to upsert`)
         }
     } catch (error) {
         console.log("error posting new equipmnent to nextjs website: " + error);
     }
-
-   
-   
-
 };
 
 const handleOnTransferAsMint: TransferHandler = async (event, context) => {
 
     let fromAddress = event.params.from.toString();
+try {
     if (fromAddress === `0x0000000000000000000000000000000000000000`) {
+
         let toAddress = event.params.to.toString();
         let equipmentId = parseInt(event.params.tokenId.toString());
         let collectionAddress = ethers.utils.getAddress(process.env.ANOMURA_EQUIPMENT_ADDRESS);
@@ -85,8 +86,14 @@ const handleOnTransferAsMint: TransferHandler = async (event, context) => {
                     owner: "",
                 }, // do nothing
             });
+        }else{
+            console.log(`Equipment existed. No need to create`)
         }
     }
+} catch (error) {
+    console.log("error saving new equipment: " + error);
+}
+   
 };
 
 export const AnomuraEquipment = {
