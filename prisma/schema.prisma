@@ -264,7 +264,7 @@ model Equipment {
 
   createdAt               DateTime            @default(now())
   updatedAt               DateTime            @default(now()) @updatedAt
-  anomura                 Anomuras?           @relation(fields: [anomuraId], references: [crabId])
+  anomura                 Anomuras?           @relation(fields: [anomuraId], references: [crabId], onDelete: SetNull)
   anomuraId               Int?
   isEquipped              Boolean             @default(false)
   isReveal                Boolean             @default(false)
@@ -275,4 +275,38 @@ model ClaimMerkleQty {
     id                      Int                 @id @default(autoincrement())
     address                 String              @unique
     quantity                Int              
+}
+
+model UniversalEquipmentManagerLog {
+  id                      Int                 @id @default(autoincrement())
+  transactionHash         String 
+  blockNumber             Int
+  blockHash               String
+  logId                   String 
+
+  fromAddress             String
+  fromTokenId             Int
+  toAddress               String
+  toTokenId               Int
+  sender                  String
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @default(now()) @updatedAt
+  action                  String?
+  @@unique([blockNumber, blockHash, transactionHash, logId]) 
+}
+
+model UniversalEquipmentManagerLogError {
+  id                      Int                 @id @default(autoincrement())
+  transactionHash         String 
+  fromAddress             String
+  fromTokenId             Int
+  toAddress               String
+  toTokenId               Int
+  sender                  String
+  error                   String
+  action                  String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @default(now()) @updatedAt
+
+  @@unique([transactionHash, sender]) 
 }

@@ -19,7 +19,13 @@ const ponderConfig = {
       abi: "./abis/AnomuraEquipment.json",
       startBlock: parseInt(process.env.ANOMURA_EQUIPMENT_START_BLOCK),
     },
-
+    {
+      name: "UniversalEquipmentManager",
+      network: process.env.NETWORK,
+      address: process.env.UNIVERSAL_EQUIPMENT_MANAGER_ADDRESS,
+      abi: "./abis/UniversalEquipmentManager.json",
+      startBlock: parseInt(process.env.UNIVERSAL_EQUIPMENT_MANAGER_START_BLOCK),
+    },
   ],
 };
 
