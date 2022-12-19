@@ -1,6 +1,6 @@
-import { AnomuraEquipmentHandler } from "./AnomuraEquipmentHandler";
+import { AnomuraEquipment } from "./AnomuraEquipment";
 import { UniversalEquipmentManager } from "./UniversalEquipmentManager";
 export default {
-  AnomuraEquipment: AnomuraEquipmentHandler,
+  AnomuraEquipment: AnomuraEquipment,
   UniversalEquipmentManager: UniversalEquipmentManager
 };
