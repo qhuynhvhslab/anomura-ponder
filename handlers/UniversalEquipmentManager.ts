@@ -5,6 +5,7 @@ import prisma from "../prisma";
 import { Equipment, EquipmentRarity, EquipmentType } from "@prisma/client";
 
 const handleUniversalBindHandler: UniversalBindHandler = async (event, context) => {
+    
     console.log("Handling Bind Event!");
 
     try {
@@ -112,8 +113,9 @@ const handleUniversalBindHandler: UniversalBindHandler = async (event, context) 
 };
 
 const handleUniversalUnbindHandler: UniversalUnbindHandler = async (event, context) => {
-    console.log("Handling Unbind Event!");
     
+    console.log("Handling Unbind Event!");
+   
     try {
         let anomuraAddress = ethers.utils.getAddress(event.params.fromAddress);
         let anomuraId = parseInt(event.params.fromToken.toString());

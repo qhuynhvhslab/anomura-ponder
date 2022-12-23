@@ -6,10 +6,13 @@ import axios from "axios";
 import { EquipmentRarity, EquipmentType } from "@prisma/client";
 
 const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (event, context) => {
-
+    // console.log("\nRevealing equipment Id: ", parseInt(event.params.equipmentId.toString()));
+    // console.log("Name: ", event.params.equipmentName);
+    // console.log("Type: ", event.params.equipmentType);
+    // console.log("Rarity: ", event.params.equipmentRarity);
+  
     try {
-        // console.log(event)
-     
+  
         let collectionAddress = ethers.utils.getAddress(event.address.toString());// || process.env.ANOMURA_EQUIPMENT_ADDRESS);
         let equipmentId = parseInt(event.params.equipmentId.toString());
         let equipmentName = event.params.equipmentName;
@@ -55,8 +58,7 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
 };
 
 const handleOnTransferAsMint: TransferHandler = async (event, context) => {
-    // console.log("equipmentId: ", parseInt(event.params.tokenId.toString()));
-
+    
     try {
         let fromAddress = event.params.from.toString();
 
@@ -81,7 +83,7 @@ const handleOnTransferAsMint: TransferHandler = async (event, context) => {
                     create: {
                         equipmentId,
                         collectionAddress,
-                        equipmentName: "Mystery Rune of DeepSea",
+                        equipmentName: "Mystery Rune of The DeepSea",
                     },
                     update: {
                         owner: "",
