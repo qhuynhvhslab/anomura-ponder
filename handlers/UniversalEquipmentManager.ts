@@ -1,11 +1,10 @@
 import { UniversalBindHandler, UniversalUnbindHandler } from "../generated/handlers";
 import { ethers } from "ethers";
 import prisma from "../prisma";
-
+import axios from "axios";
 import { Equipment, EquipmentRarity, EquipmentType } from "@prisma/client";
 
 const handleUniversalBindHandler: UniversalBindHandler = async (event, context) => {
-    
     console.log("Handling Bind Event!");
 
     try {
@@ -113,9 +112,8 @@ const handleUniversalBindHandler: UniversalBindHandler = async (event, context) 
 };
 
 const handleUniversalUnbindHandler: UniversalUnbindHandler = async (event, context) => {
-    
     console.log("Handling Unbind Event!");
-   
+
     try {
         let anomuraAddress = ethers.utils.getAddress(event.params.fromAddress);
         let anomuraId = parseInt(event.params.fromToken.toString());
@@ -207,6 +205,16 @@ const handleUniversalUnbindHandler: UniversalUnbindHandler = async (event, conte
             });
 
             await prisma.$transaction([unbindOp, updateIsEquipToFalseOp, contractLogOp]);
+            /* verything is ok, revalidate opensea link */
+            let webhost =
+                process.env.NEXT_PUBLIC_TESTNET_MODE == "true"
+                    ? "https://anomura-staging.vercel.app/api/revalidate"
+                    : "https://anomuragame.com/api/revalidate";
+
+            await axios.post(webhost, {
+                path: `/imageviewer/${anomuraId}`,
+                secret: process.env.REVALIDATE_TOKEN,
+            });
         }
     } catch (error) {
         console.log("Unbind error!");
