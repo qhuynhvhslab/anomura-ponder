@@ -44,11 +44,15 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
                         "Content-Type": "application/json",
                     },
                 }
-            );
+            ).then(r =>r.data);
             sleep();
-            if (newEquipmentOp) {
-                console.log("newEquipmentOp", newEquipmentOp);
+            if (!newEquipmentOp?.isError) {
+            
                 console.log(`Reveal done, track in log to not process again`);
+            }
+            else{
+                console.log(`found error`);
+                console.log(newEquipmentOp?.isError);
             }
         } else {
             console.log(`Equipment ${equipmentId} revealed. No need to upsert`);
