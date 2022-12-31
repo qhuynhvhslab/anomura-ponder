@@ -47,6 +47,7 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
             );
             sleep();
             if (newEquipmentOp) {
+                console.log("newEquipmentOp", newEquipmentOp);
                 console.log(`Reveal done, track in log to not process again`);
             }
         } else {
@@ -91,7 +92,7 @@ const handleOnTransferAsMint: TransferHandler = async (event, context) => {
                 });
                 sleep();
             } else {
-                console.log(`Equipment existed. No need to create`);
+                console.log(`Equipment ${equipmentId} existed. No need to create`);
             }
         }
     } catch (error) {
