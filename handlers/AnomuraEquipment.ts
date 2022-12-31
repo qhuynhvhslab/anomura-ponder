@@ -45,7 +45,7 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
                     },
                 }
             );
-
+            sleep();
             if (newEquipmentOp) {
                 console.log(`Reveal done, track in log to not process again`);
             }
@@ -89,6 +89,7 @@ const handleOnTransferAsMint: TransferHandler = async (event, context) => {
                         owner: "",
                     }, // do nothing
                 });
+                sleep();
             } else {
                 console.log(`Equipment existed. No need to create`);
             }
@@ -97,6 +98,10 @@ const handleOnTransferAsMint: TransferHandler = async (event, context) => {
         console.log("error saving new equipment: " + error);
     }
 };
+
+function sleep(ms = 1000) {
+    return new Promise((res) => setTimeout(res, ms));
+  }
 
 export const AnomuraEquipment = {
     EquipmentMetadataSet: handleEquipmentMetadataSetHandler,

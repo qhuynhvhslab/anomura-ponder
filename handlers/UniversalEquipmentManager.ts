@@ -89,6 +89,7 @@ const handleUniversalBindHandler: UniversalBindHandler = async (event, context) 
             });
 
             await prisma.$transaction([bindOp, contractLogOp]);
+            sleep();
         }
     } catch (error) {
         console.log("Bind error!");
@@ -205,6 +206,7 @@ const handleUniversalUnbindHandler: UniversalUnbindHandler = async (event, conte
             });
 
             await prisma.$transaction([unbindOp, updateIsEquipToFalseOp, contractLogOp]);
+            sleep();
             /* verything is ok, revalidate opensea link */
             let webhost =
                 process.env.NEXT_PUBLIC_TESTNET_MODE == "true"
@@ -241,3 +243,6 @@ export const UniversalEquipmentManager = {
     UniversalBind: handleUniversalBindHandler,
     UniversalUnbind: handleUniversalUnbindHandler,
 };
+function sleep(ms = 1000) {
+    return new Promise((res) => setTimeout(res, ms));
+  }
