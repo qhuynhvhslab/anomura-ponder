@@ -21,6 +21,6 @@ export const prisma =
         // log: ['query']
     })
 
-export const equipmentType = EquipmentType
+
 
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma

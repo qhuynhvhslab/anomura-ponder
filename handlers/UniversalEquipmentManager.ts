@@ -1,6 +1,6 @@
 import { UniversalBindHandler, UniversalUnbindHandler } from "../generated/handlers";
 import { ethers } from "ethers";
-import prisma from "../prisma";
+import {prisma} from "../prisma";
 import axios from "axios";
 import { Equipment, EquipmentRarity, EquipmentType } from "@prisma/client";
 
