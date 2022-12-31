@@ -28,7 +28,7 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
         // Only process if not reveal yet
         if (!equipmentQuery?.isReveal) {
             let equipmentPostApi = `${process.env.ANOMURA_WEBSITE}/api/equipment/post/${equipmentId}`;
-            console.log(`Trying to reveal equipmentId: ${equipmentId}`);
+            console.log(`Trying to reveal equipmentId: ${equipmentId} with attributes: ${equipmentName} ${equipmentType} ${equipmentRarity}`);
 
             let newEquipmentOp = await axios.post(
                 equipmentPostApi,
