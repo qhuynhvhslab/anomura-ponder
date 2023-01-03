@@ -10,11 +10,11 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
     // console.log("Name: ", event.params.equipmentName);
     // console.log("Type: ", event.params.equipmentType);
     // console.log("Rarity: ", event.params.equipmentRarity);
-  
+    let equipmentId = parseInt(event.params.equipmentId.toString());
     try {
   
         let collectionAddress = ethers.utils.getAddress(event.address.toString());// || process.env.ANOMURA_EQUIPMENT_ADDRESS);
-        let equipmentId = parseInt(event.params.equipmentId.toString());
+        
         let equipmentName = event.params.equipmentName;
         let equipmentType = event.params.equipmentType;
         let equipmentRarity = event.params.equipmentRarity;
@@ -59,17 +59,34 @@ const handleEquipmentMetadataSetHandler: EquipmentMetadataSetHandler = async (ev
         }
     } catch (error) {
         console.log("error posting new equipmnent to nextjs website: " + error);
+
+        let message;
+        if (error instanceof Error) message = error.message;
+        else message = String(error);
+
+        let url = `Catch error on handleEquipmentMetadataSetHandler at equipmentId ${equipmentId}`, referer ="", userAgent="";
+
+        await prisma.logError.create({
+            data: {
+                url,
+                referer,
+                userAgent,
+                content: {
+                    message
+                }
+            }
+        })
     }
 };
 
 const handleOnTransferAsMint: TransferHandler = async (event, context) => {
-    
+    let equipmentId = parseInt(event.params.tokenId.toString());
     try {
         let fromAddress = event.params.from.toString();
 
         if (fromAddress === `0x0000000000000000000000000000000000000000`) {
             let toAddress = event.params.to.toString();
-            let equipmentId = parseInt(event.params.tokenId.toString());
+            
             let collectionAddress = ethers.utils.getAddress(event.address.toString())//process.env.ANOMURA_EQUIPMENT_ADDRESS);
 
             let equipmentQuery = await prisma.equipment.findUnique({
@@ -101,6 +118,23 @@ const handleOnTransferAsMint: TransferHandler = async (event, context) => {
         }
     } catch (error) {
         console.log("error saving new equipment: " + error);
+ 
+        let message;
+        if (error instanceof Error) message = error.message;
+        else message = String(error);
+
+        let url = `Catch error on handleOnTransferAsMint at equipmentId ${equipmentId}`, referer ="", userAgent="";
+
+        await prisma.logError.create({
+            data: {
+                url,
+                referer,
+                userAgent,
+                content: {
+                    message
+                }
+            }
+        })
     }
 };
 
